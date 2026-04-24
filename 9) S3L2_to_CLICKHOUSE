@@ -1,0 +1,38 @@
+# Step 9: Query S3 data in Clickhouse 
+
+# Open cmd & type:-
+# ClickHouse server port (default for http: 8123)
+
+sudo service clickhouse-server start
+clickhouse-client
+
+SELECT *
+FROM s3('https:// sarthakawsproject.s3.amazonaws.com/ final_merged_data /part-00000-2b71a92d-3e97-467c-adba-faf59835ab36-c000.csv', 'CSV', '‘cust_id Int32, ord_id Int32, cust_name String, email String, phone String, 
+address String, city String, last_purchase Date, ord_name String, price Int32,
+ord_date Date, delivery_date Date, shipping_id Int32, shipping_status String,
+estimated_delivery Date, payment_method String,
+Order_Processing_Time Int32, Delivery_Delay Int32'
+);
+
+
+CREATE TABLE ecom
+(cust_id Int32, ord_id Int32, cust_name String, email String, phone String, 
+address String, city String, last_purchase Date, ord_name String, price Int32,
+ord_date Date, delivery_date Date, shipping_id Int32, shipping_status String,
+estimated_delivery Date, payment_method String,
+Order_Processing_Time Int32, Delivery_Delay Int32
+)
+ENGINE = MergeTree()
+ORDER BY id;
+
+
+INSERT INTO ecom
+SELECT *
+FROM s3(
+  'https:// sarthakawsproject.s3.amazonaws.com/ final_merged_data /part-00000-2b71a92d-3e97-467c-adba-faf59835ab36-c000.csv',
+  'CSV', ‘cust_id Int32, ord_id Int32, cust_name String, email String, phone String, 
+address String, city String, last_purchase Date, ord_name String, price Int32,
+ord_date Date, delivery_date Date, shipping_id Int32, shipping_status String,
+estimated_delivery Date, payment_method String,
+Order_Processing_Time Int32, Delivery_Delay Int32'
+);

@@ -1,0 +1,17 @@
+# Step7:  Store transform data in Hive 
+
+create database project;
+use project;
+
+CREATE EXTERNAL TABLE merged_data (
+    cust_id INT, ord_id INT, cust_name STRING, email STRING, phone STRING, 
+address STRING, city STRING, last_purchase DATE, ord_name STRING, price INT,
+ord_date DATE, delivery_date DATE, shipping_id INT, shipping_status STRING,
+estimated_delivery DATE, payment_method STRING,
+Order_Processing_Time INT, Delivery_Delay INT)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '|';
+
+df_cleaned.coalesce(1).write.mode("overwrite").format("hive").saveAsTable("project.merged_data")
+
+
